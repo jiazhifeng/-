@@ -77,7 +77,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:onClick="data2"
-            android:text="修改距离" />
+            android:text="修改速率" />
     </LinearLayout>
 
 </LinearLayout>

@@ -18,23 +18,18 @@ import android.widget.TextView;
 import com.jzf.record.R;
 
 public class MainActivity extends Activity {
+	// 调试信息
 	private static final String TAG = "info信息";
-	private  long UPTATE_INTERVAL_TIME = 1000;
-	private  double SPEED_SHRESHOLD = 7;
+	// 设置间隔时间
+	private long UPTATE_INTERVAL_TIME = 1000;
+	// 设置速率
+	private double SPEED_SHRESHOLD = 7;
 	private SensorManager mSensorManager;
 	private Sensor mSensor;
 	private SharedPreferences mSP;
-
+	// 上一次产生事件的时间
 	private long lastUpdateTime;
 
-	private Handler mHandler = new Handler() {
-
-		@Override
-		public void handleMessage(Message msg) {
-
-		}
-
-	};
 	// 传感器监听器
 	private SensorEventListener mSensorEventListener = new SensorEventListener() {
 		@Override
@@ -44,7 +39,7 @@ public class MainActivity extends Activity {
 
 			long timeInterval = currentUpdateTime - lastUpdateTime;
 			Log.i(TAG, "timeInterval= " + timeInterval);
-			setText(R.id.tv_record_X,"间隔时间(ms): "+timeInterval);
+			setText(R.id.tv_record_X, "间隔时间(ms): " + timeInterval);
 			if (timeInterval < UPTATE_INTERVAL_TIME)
 				return;
 			lastUpdateTime = currentUpdateTime;
@@ -70,14 +65,14 @@ public class MainActivity extends Activity {
 					/ timeInterval * 10000;
 			Log.v("thelog", "===========log===================");
 			Log.i(TAG, "speed= " + speed);
-			setText(R.id.tv_record_Y,"速率为: "+speed);
+			setText(R.id.tv_record_Y, "速率为: " + speed);
 			if (speed >= SPEED_SHRESHOLD) {
 				// onShakeListener.onShake();
 				mSP = getSharedPreferences("record", MODE_PRIVATE);
 				int path = mSP.getInt("path", 1);
-				setText(R.id.tv_record_current,"正在走路...第"+path+"步");
+				setText(R.id.tv_record_current, "正在走路...第" + path + "步");
 				Editor editor = mSP.edit();
-				editor.putInt("path", path+1);
+				editor.putInt("path", path + 1);
 				editor.commit();
 			}
 		}
@@ -115,20 +110,30 @@ public class MainActivity extends Activity {
 		super.onDestroy();
 		mSensorManager.unregisterListener(mSensorEventListener);
 	}
-	public void setText(int id,String text){
-		TextView tv=(TextView) findViewById(id);
+
+	// 根据id设置文本的内容
+	public void setText(int id, String text) {
+		TextView tv = (TextView) findViewById(id);
 		tv.setVisibility(TextView.VISIBLE);
 		tv.setText(text);
 	}
 
+	/**
+	 * 开始计数
+	 * 
+	 * @param v
+	 */
 	public void begin(View v) {
-		
 		// 注册传感器管理器监听事件
 		mSensorManager.registerListener(mSensorEventListener, mSensor,
 				mSensorManager.SENSOR_DELAY_NORMAL);
 		lastUpdateTime = System.currentTimeMillis();
 	}
 
+	/**
+	 * 重置计数
+	 * @param v
+	 */
 	public void reset(View v) {
 		// 储存数据
 		mSP = getSharedPreferences("record", MODE_PRIVATE);
@@ -137,15 +142,21 @@ public class MainActivity extends Activity {
 		editor.commit();
 
 	}
-
+	/**
+	 * 修改间隔时间
+	 * @param v
+	 */
 	public void data1(View v) {
-		EditText et_interval=(EditText) findViewById(R.id.et_interval);
-		UPTATE_INTERVAL_TIME=Long.parseLong(et_interval.getText().toString());
+		EditText et_interval = (EditText) findViewById(R.id.et_interval);
+		UPTATE_INTERVAL_TIME = Long.parseLong(et_interval.getText().toString());
 	}
-
+	/**
+	 * 修改速率
+	 * @param v
+	 */
 	public void data2(View v) {
-		EditText et_speed=(EditText) findViewById(R.id.et_speed);
-		SPEED_SHRESHOLD=Double.parseDouble(et_speed.getText().toString());
+		EditText et_speed = (EditText) findViewById(R.id.et_speed);
+		SPEED_SHRESHOLD = Double.parseDouble(et_speed.getText().toString());
 	}
 
 }
